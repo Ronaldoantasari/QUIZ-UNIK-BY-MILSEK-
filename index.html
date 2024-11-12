@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Animasi</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: #f0f4f8;
+        }
+
+        .date-time {
+            font-size: 24px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .start-button, .options-button, .input-button, .submit-button {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #4E9F3D; /* Dark green background */
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: background-color 0.3s ease;
+        }
+
+        .start-button:hover, .options-button:hover, .input-button:hover, .submit-button:hover {
+            background-color: #388E3C; /* Darker green on hover */
+        }
+
+        .heart-beat {
+            font-size: 50px;
+            display: none;
+            animation: heartbeat 1s infinite;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .options {
+            display: none;
+            font-size: 20px;
+            margin-top: 20px;
+        }
+
+        .name-input {
+            display: none;
+        }
+
+        .question {
+            display: none;
+            font-size: 22px;
+            margin-top: 30px;
+            font-weight: 600;
+        }
+
+        .congratulation {
+            display: none;
+            font-size: 24px;
+            color: #FFD700;
+            font-weight: bold;
+            margin-top: 40px;
+        }
+
+        .oval-box {
+            display: none;
+            border-radius: 50px;
+            border: 3px solid #FFD700;
+            padding: 20px;
+            font-size: 32px;
+            background-color: #fff;
+            width: 200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .animated-background {
+            animation: moveBackground 10s infinite linear;
+            background: linear-gradient(45deg, #ff80ab, #00bcd4);
+            height: 100vh;
+            background-size: 400% 400%;
+        }
+
+        @keyframes moveBackground {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        .emoji {
+            font-size: 30px;
+        }
+
+        .question-box {
+            margin: 20px auto;
+            max-width: 350px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .question-box input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        /* Animasi Detak Jantung untuk tombol */
+        .surprise-button {
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #FF4081; /* Pink background */
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: background-color 0.3s ease;
+            animation: heartbeat 1s infinite;
+        }
+
+        .surprise-button:hover {
+            background-color: #F50057; /* Darker pink on hover */
+        }
+
+        .message {
+            font-size: 24px;
+            display: none;
+            margin-top: 30px;
+            color: #333;
+            font-weight: bold;
+            animation: fadeOut 2s forwards; /* Animation to fade out message */
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+    </style>
+</head>
+<body class="animated-background">
+    <div class="date-time">
+        <span id="date-time"></span>
+    </div>
+
+    <div class="heart-beat" id="heart-beat">𓆉</div>
+
+    <button class="start-button" onclick="startGame()">Mulai Game</button>
+
+    <div class="options">
+        <button class="options-button" onclick="chooseOption()">Opsi 1</button>
+        <button class="options-button" onclick="chooseOption()">Opsi 2</button>
+        <button class="options-button" onclick="chooseOption()">Opsi 3</button>
+    </div>
+
+    <div class="name-input">
+        <input type="text" id="name" placeholder="Masukkan Nama" />
+        <button class="input-button" onclick="submitName()">Masukkan</button>
+    </div>
+
+    <div class="question">
+        <div class="question-box" id="question-box">
+            <p id="question-text"></p>
+            <input type="text" id="answer" placeholder="Jawab" />
+            <button class="submit-button" onclick="submitAnswer()">Submit</button>
+        </div>
+    </div>
+
+    <div class="congratulation">
+        <p>Selamat <span id="user-name"></span>!</p>
+        <p>🏆🎉 100% Senyum Bahagia 🎉🏆</p>
+    </div>
+
+    <div class="oval-box" id="oval-box">Surprise!</div>
+
+    <!-- Bagian Surprise dan Opsi -->
+    <button class="surprise-button" id="surprise-button" onclick="showMessage()">👇 Tekan Tanda Surprise Ini 👇</button>
+
+    <div class="message" id="message">
+        <p>HAI KONTOLODON LAGI NGAPAIN?</p>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        const questions = [
+            "Apa hobi kamu?",
+            "Jika kamu bisa bepergian ke mana saja, kamu mau ke mana?",
+            "Film favorit kamu apa?",
+            "Siapa yang kamu idolakan?",
+            "Apa yang paling kamu takuti?",
+            "Jika kamu bisa makan satu makanan seumur hidup, apa itu?",
+            "Apa kenangan masa kecil yang paling kamu ingat?",
+            "Apa yang kamu ingin pelajari lebih dalam?",
+            "Siapa yang paling kamu percayai?",
+            "Apa cita-cita kamu di masa depan?"
+        ];
+
+        // Menampilkan waktu dan tanggal otomatis
+        function updateDateTime() {
+            const date = new Date();
+            const dateTimeString = `Hari ${date.toLocaleString('id-ID', { weekday: 'long' })}, ${date.getDate()} ${date.toLocaleString('id-ID', { month: 'long' })} ${date.getFullYear()} - ${date.toLocaleTimeString()}`;
+            document.getElementById("date-time").innerText = dateTimeString;
+        }
+
+        setInterval(updateDateTime, 1000);
+
+        // Fungsi mulai game
+        function startGame() {
+            document.querySelector('.start-button').style.display = 'none';
+            document.getElementById('heart-beat').style.display = 'block';
+            setTimeout(function() {
+                document.getElementById('heart-beat').style.display = 'none';
+                document.querySelector('.options').style.display = 'block';
+            }, 1000);
+        }
+
+        // Opsi acak
+        function chooseOption() {
+            document.querySelector('.options').style.display = 'none';
+            document.querySelector('.name-input').style.display = 'block';
+            document.getElementById('heart-beat').style.display = 'block';
+            setTimeout(function() {
+                document.getElementById('heart-beat').style.display = 'none';
+            }, 1000);
+        }
+
+        // Menginputkan nama
+        function submitName() {
+            const name = document.getElementById('name').value;
+            document.getElementById('user-name').innerText = name;
+            document.querySelector('.name-input').style.display = 'none';
+            document.querySelector('.question').style.display = 'block';
+            showQuestion();
+        }
+
+        // Menampilkan pertanyaan
+        function showQuestion() {
+            if (currentQuestion < questions.length) {
+                document.getElementById('question-text').innerText = questions[currentQuestion];
+            } else {
+                finishGame();
+            }
+        }
+
+        // Mengirimkan jawaban
+        function submitAnswer() {
+            const answer = document.getElementById('answer').value;
+            if (answer) {
+                currentQuestion++;
+                document.getElementById('answer').value = ''; // Mengosongkan input jawaban
+                showQuestion(); // Menampilkan pertanyaan berikutnya
+            }
+        }
+
+        // Menyelesaikan game dan menampilkan ucapan selamat
+        function finishGame() {
+            document.querySelector('.question').style.display = 'none';
+            document.querySelector('.congratulation').style.display = 'block';
+            document.getElementById('oval-box').style.display = 'block';
+            setTimeout(function() {
+                document.getElementById('oval-box').style.display = 'none';
+            }, 2000);
+        }
+
+        // Menampilkan pesan "HAI KONTOLODON LAGI NGAPAIN?" setelah tombol surprise ditekan
+        function showMessage() {
+            document.getElementById('surprise-button').style.display = 'none'; // Menyembunyikan tombol
+            document.getElementById('message').style.display = 'block'; // Menampilkan pesan
+            setTimeout(function() {
+                document.getElementById('message').style.display = 'none'; // Menyembunyikan pesan setelah beberapa detik
+            }, 3000); // Pesan akan hilang setelah 3 detik
+        }
+    </script>
+</body>
+</html>
